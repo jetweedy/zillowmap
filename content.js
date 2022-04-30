@@ -31,10 +31,10 @@ function load_jquery() {
 
 function openZillowMap() {
 	chrome.storage.local.get(['jet_zillowmap'], function(data) {
-		if (typeof data.jet_zillowmap != "undefined" || typeof data.jet_zillowmap.addresses != "undefined") {
-			var addresses = data.jet_zillowmap.addresses;
-			var json = JSON.stringify(addresses);
-			openWindowWithPost("https://trianglewebtech.com/chrome/zillowmap/actions.php", {addresses:json});
+		if (typeof data.jet_zillowmap != "undefined" || typeof data.jet_zillowmap.items != "undefined") {
+			var items = data.jet_zillowmap.items;
+			var json = JSON.stringify(items);
+			openWindowWithPost("https://trianglewebtech.com/chrome/zillowmap/actions.php", {items:json});
 		}
 	});
 	chrome.storage.local.remove("jet_zillowmap");
@@ -49,21 +49,30 @@ function continueZillowMapper(force) {
 		console.log("data", data);
 		//// If it exists and it's not empty...
 		if (typeof data.jet_zillowmap != "undefined" 
-			&& typeof data.jet_zillowmap.addresses != "undefined"
+			&& typeof data.jet_zillowmap.items != "undefined"
 			&& (
-				data.jet_zillowmap.addresses.length > 0
+				data.jet_zillowmap.items.length > 0
 				|| !!force
 			)
 		) {
+			console.log("continuing with zillowmapper!");
 			var jet_zillowmap = data.jet_zillowmap;
 			console.log("jet_zillowmap", jet_zillowmap);
-			var elements = document.querySelectorAll("address.list-card-addr");
-			for (var a=0;a<elements.length;a++) {
-				jet_zillowmap.addresses.push(elements[a].innerText);
+			var details = [];
+
+			var listcards = document.querySelectorAll(".list-card-info");
+			for (var l=0;l<listcards.length;l++) {
+				var details = listcards[l].querySelector(".list-card-details");
+				var address = listcards[l].querySelector(".list-card-addr");
+				var item = {
+					details:details.innerText
+					,
+					address:address.innerText
+				}
+				jet_zillowmap.items.push(item);
 			}
 			console.log("jet_zillowmap", jet_zillowmap);
 			chrome.storage.local.set({jet_zillowmap});
-
 			var buttons = document.querySelectorAll("button");
 			for (var b=0;b<buttons.length;b++) {
 				if (buttons[b].title=="Next page") {
@@ -75,8 +84,6 @@ function continueZillowMapper(force) {
 					}
 				}
 			}
-
-
 		}
 	});
 
@@ -86,7 +93,7 @@ function continueZillowMapper(force) {
 
 function runZillowMapper() {
 	console.log("runZillowMapper()");
-	jet_zillowmap = {addresses:[]};
+	jet_zillowmap = {items:[]};
 	chrome.storage.local.set({jet_zillowmap});
 	continueZillowMapper(true);
 }
@@ -112,32 +119,8 @@ chrome.runtime.onMessage.addListener(
 			case "continueZillowMapper":
 				continueZillowMapper();
 				break;
-
-
 			case "openZillowMap":
 				openZillowMap();
-				break;
-			case "init":
-				jet_zillowmap = {addresses:[]};
-				chrome.storage.local.set({jet_zillowmap});
-				chrome.storage.local.get(['jet_zillowmap'], function(jet_zillowmap) {
-					console.log("init", jet_zillowmap);
-				});
-				break;
-			case "continue":
-				chrome.storage.local.get(['jet_zillowmap'], function(data) {
-					if (typeof data.jet_zillowmap == "undefined" || typeof data.jet_zillowmap.addresses == "undefined") {
-						jet_zillowmap = {addresses:[]};
-					} else {
-						var jet_zillowmap = data.jet_zillowmap;
-					}
-					console.log("then:", jet_zillowmap);
-					for (var i=0;i<10;i++) {
-						jet_zillowmap.addresses.push("Address " + i);
-					}
-					chrome.storage.local.set({jet_zillowmap});
-					console.log("now:", jet_zillowmap);
-				});
 				break;
 
 

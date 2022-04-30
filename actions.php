@@ -3,25 +3,24 @@
 error_reporting(E_ALL);
 
 //header("Content-type:text/plain");
-$json = $_POST['addresses'];
-$addresses = json_decode($json);
+$json = $_POST['items'];
+$items = json_decode($json);
 
 ?>
 <html>
 	<head>
 		<script>
-		var addresses = [];	
+		var items = [];
 
 		<?php
-		foreach ($addresses as $address) {
-			print "addresses.push('".$address."');";
+		foreach ($items as $item) {
+			print "items.push(".json_encode($item).");";
 		}
 		?>
-		console.log(addresses);
 		</script>
 
-		<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=_________________"></script>
-		<script type="text/javascript" src="https://jonathantweedy.com/tools/jetMap/jetMap.js"></script>
+		<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyBpm2A0DiAP6gb7KpEhT0zWTHh8EBripC0"></script>
+		<script type="text/javascript" src="/tools/jetMap/jetMap.js"></script>
 
 		<style>
 			body {
@@ -47,25 +46,25 @@ $addresses = json_decode($json);
 				Container:document.getElementById("myMap")
 			});
 			var to = 0;
-			function putPin(address) {
-				geocoder.geocode( { 'address': this.address}, function(results, status) {
+			function putPin() {
+				console.log(this.item);
+				geocoder.geocode( { 'address': this.item.address}, function(results, status) {
 					if (status == 'OK') {
 						console.log(results[0].geometry.location.lat(), results[0].geometry.location.lng());
 						map.addMarker({
-							"title":this.address ,
-							"content":this.address,
+							"title":this.item.address + "<br />" + this.item.details,
+							"content":this.item.address + "<br />" + this.item.details,
 							"color":"aae",
 							"label":"",
 							"latitude":results[0].geometry.location.lat(),
 							"longitude":results[0].geometry.location.lng()
 						});
 					}
-				}.bind({address:this.address}));
+				}.bind({item:this.item}));
 			}
-			for (var a=0;a<addresses.length;a++) {
-				var address = addresses[a];
-				console.log(address);
-				setTimeout(putPin.bind({address:address}), to++ * 500);
+			for (var a=0;a<items.length;a++) {
+				var item = items[a];
+				setTimeout(putPin.bind({item:item}), to++ * 500);
 			}
 		</script>	
 	</body>
