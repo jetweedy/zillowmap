@@ -1,4 +1,16 @@
 
+// https://www.tutorialspoint.com/how-to-get-image-data-url-in-javascript
+function getDataUrl(img) {
+   // Create canvas
+   const canvas = document.createElement('canvas');
+   const ctx = canvas.getContext('2d');
+   // Set width and height
+   canvas.width = img.width;
+   canvas.height = img.height;
+   // Draw the image
+   ctx.drawImage(img, 0, 0);
+   return canvas.toDataURL('image/jpeg');
+}
 
 // https://stackoverflow.com/questions/5684303/javascript-window-open-pass-values-using-post
 function openWindowWithPost(url, data) {
@@ -60,14 +72,20 @@ function continueZillowMapper(force) {
 			console.log("jet_zillowmap", jet_zillowmap);
 			var details = [];
 
-			var listcards = document.querySelectorAll(".list-card-info");
+			var listcards = document.querySelectorAll(".list-card");
 			for (var l=0;l<listcards.length;l++) {
 				var details = listcards[l].querySelector(".list-card-details");
 				var address = listcards[l].querySelector(".list-card-addr");
+				var link = listcards[l].querySelector(".list-card-link");
+				var image = listcards[l].querySelector(".list-card-top img");
 				var item = {
 					details:details.innerText
 					,
 					address:address.innerText
+					,
+					link:link.href
+					,
+					image:image.src
 				}
 				jet_zillowmap.items.push(item);
 			}

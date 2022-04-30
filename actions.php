@@ -52,8 +52,10 @@ $items = json_decode($json);
 					if (status == 'OK') {
 						console.log(results[0].geometry.location.lat(), results[0].geometry.location.lng());
 						map.addMarker({
-							"title":this.item.address + "<br />" + this.item.details,
-							"content":this.item.address + "<br />" + this.item.details,
+							"title":this.item.address + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + this.item.details,
+							"content":
+//								"<img style='width:200px; margin:5px;' src='" + this.item.image + "' /><br />"
+								"<a href='"+this.item.link+"' target='_blank'>" + this.item.address + "<br />" + this.item.details + "</a>",
 							"color":"aae",
 							"label":"",
 							"latitude":results[0].geometry.location.lat(),
