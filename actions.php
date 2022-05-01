@@ -19,7 +19,7 @@ $items = json_decode($json);
 		?>
 		</script>
 
-		<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyBpm2A0DiAP6gb7KpEhT0zWTHh8EBripC0"></script>
+		<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=___________________"></script>
 		<script type="text/javascript" src="/tools/jetMap/jetMap.js"></script>
 
 		<style>
